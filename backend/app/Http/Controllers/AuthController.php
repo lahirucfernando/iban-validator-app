@@ -3,12 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\ApiResponse;
-use App\Services\TokenService;
+use App\Services\AuthService;
 use Illuminate\Support\Facades\Log;
+use App\Http\Requests\LoginRequest;
 use App\Http\Resources\UserResource;
 use App\Http\Requests\UserRegisterRequest;
 use App\Interfaces\AuthRepositoryInterface;
 use Symfony\Component\HttpFoundation\Response;
+use App\Exceptions\AuthenticationFailedException;
 
 /**
  * @OA\Info(
@@ -19,7 +21,7 @@ use Symfony\Component\HttpFoundation\Response;
 class AuthController extends Controller
 {
     public function __construct(
-        protected TokenService $tokenService,
+        protected AuthService $authService,
         protected AuthRepositoryInterface $authRepository
     ) {}
 
@@ -76,7 +78,7 @@ class AuthController extends Controller
     {
         try {
             $user = $this->authRepository->register($request->all());
-            $token = $this->tokenService->createToken($user);
+            $token = $this->authService->createToken($user);
             return ApiResponse::success([
                 'user' => new UserResource($user),
                 'token' => $token,
@@ -84,6 +86,25 @@ class AuthController extends Controller
         } catch (\Throwable $e) {
             Log::error('register() User Register Exception: ' . $e->getMessage());
             return ApiResponse::error('An unexpected error occurred while registering the user.', Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+    public function login(LoginRequest $request)
+    {
+        try {
+            $user = $this->authService->validateCredentials($request->email, $request->password);
+            $token = $this->authService->createToken($user);
+
+            return ApiResponse::success([
+                'user' => new UserResource($user),
+                'token' => $token,
+            ], 'User logged in successfully', Response::HTTP_OK);
+        } catch (AuthenticationFailedException $e) {
+            return ApiResponse::error($e->getMessage(), $e->getStatusCode());
+        } catch (\Throwable $e) {
+            Log::error('login() User Login Exception: ' . $e->getMessage());
+            return ApiResponse::error('An unexpected error occurred while user login.', Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 }

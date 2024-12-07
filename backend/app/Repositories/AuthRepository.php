@@ -21,6 +21,14 @@ class AuthRepository implements AuthRepositoryInterface
 
         return $user;
     }
+     
+    /**
+     * {@inheritDoc}
+    */
+    public function findUserByEmail(string $email)
+    {
+        return User::where('email', $email)->first();
+    }
 
   
 }

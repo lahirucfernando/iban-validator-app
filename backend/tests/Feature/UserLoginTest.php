@@ -83,7 +83,7 @@ class UserLoginTest extends TestCase
         $response->assertStatus(401)
             ->assertJson([
                 'status' => 'error',
-                'message' => 'Invalid credentials',
+                'message' => 'Invalid credentials.',
             ]);
     }
 
