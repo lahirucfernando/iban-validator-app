@@ -9,6 +9,11 @@ class UserRegistrationTest extends TestCase
 {
     use RefreshDatabase;
 
+    /**
+     * Test successful user registration.
+     *
+     * @return void
+     */
     public function test_user_registration_pass_with_valid_data()
     {
         $response = $this->postJson('/api/user-register', [
@@ -44,6 +49,11 @@ class UserRegistrationTest extends TestCase
         $this->assertDatabaseHas('users', ['email' => 'devid@example.com']);
     }
 
+    /**
+     * Test user registration with invalid data.
+     *
+     * @return void
+     */
     public function test_user_registration_fails_with_invalid_data()
     {
         $response = $this->postJson('/api/user-register', [
