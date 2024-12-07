@@ -89,7 +89,48 @@ class AuthController extends Controller
         }
     }
 
-
+    /**
+     * @OA\Post(
+     *     path="/api/login",
+     *     summary="Log in a user",
+     *     description="Allows a user to log in by providing their email and password. A token is generated upon successful authentication.",
+     *     operationId="loginUser",
+     *     tags={"Authentication"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="User login credentials",
+     *         @OA\JsonContent(
+     *             required={"email", "password"},
+     *             @OA\Property(property="email", type="string", format="email", example="devid@example.com"),
+     *             @OA\Property(property="password", type="string", example="password@123")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="User successfully logged in",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="user", ref="#/components/schemas/User"),
+     *             @OA\Property(property="token", type="string", example="your_token_here")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Authentication failed - Invalid email or password",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="error", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="Invalid credentials.")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="error", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="An unexpected error occurred while user login.")
+     *         )
+     *     )
+     * )
+     */
     public function login(LoginRequest $request)
     {
         try {
@@ -101,6 +142,7 @@ class AuthController extends Controller
                 'token' => $token,
             ], 'User logged in successfully', Response::HTTP_OK);
         } catch (AuthenticationFailedException $e) {
+            Log::error('login() User Login AuthenticationFailedException: ' . $e->getMessage());
             return ApiResponse::error($e->getMessage(), $e->getStatusCode());
         } catch (\Throwable $e) {
             Log::error('login() User Login Exception: ' . $e->getMessage());
