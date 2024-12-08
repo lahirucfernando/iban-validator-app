@@ -12,7 +12,7 @@ import Dashboard from "@/pages/dashboard";
 import Login from "@/components/login"; 
 import Signup from '@/components/Signup';
 import IbanForm from '@/components/IbanForm';
-
+import IbanList from '@/components/IbanList';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -34,10 +34,10 @@ const router = createRouter({
           path: "dashboard",
           component: IbanForm,
         },
-        // {
-        //   path: "iban-list",
-        //   component: ,
-        // }
+        {
+          path: "iban-list",
+          component: IbanList,
+        }
       ],
     },
     {

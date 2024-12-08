@@ -5,7 +5,7 @@
         <v-col>
           <v-btn text to="/dashboard">IBAN Number</v-btn>
         </v-col>
-        <v-col>
+        <v-col v-if="user?.is_admin">
           <v-btn text to="/iban-list">IBNA Number List</v-btn>
         </v-col>
       </v-row>
