@@ -38,7 +38,7 @@ php artisan serve
 ```
 You can access the following urls
 - **API URL**:  http://127.0.0.1:8000/api
-- **swagger API documentation URL**: http://127.0.0.1:8000/api/documentation
+- **Swagger API documentation URL**: http://127.0.0.1:8000/api/documentation
 
 
 ## Default Users
