@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use Tests\TestCase;
 use App\Models\User;
 use Laravel\Sanctum\Sanctum;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class IbanStoreTest extends TestCase
@@ -24,9 +25,11 @@ class IbanStoreTest extends TestCase
         // Act as the created user
         Sanctum::actingAs($user);
 
+        $iban = 'AL35202111090000000001234567';
+
         // Make the API request with valid IBAN
         $response = $this->postJson('/api/save-iban', [
-            'iban' => 'AL35202111090000000001234567' // Example IBAN (valid)
+            'iban' => $iban 
         ]);
 
         // Assert HTTP status
@@ -44,10 +47,14 @@ class IbanStoreTest extends TestCase
             'message' => 'IBAN saved successfully.',
         ]);
 
-        // Assert the IBAN is stored in the database
-        $this->assertDatabaseHas('users', [
-            'iban' => 'AL35202111090000000001234567',
-        ]);
+        // Retrieve the user from the database
+        $user = $user->fresh();
+
+        // Decrypt the stored IBAN and clean it
+        $decryptedIban = Crypt::decryptString($user->iban);
+
+        // Assert that the decrypted IBAN matches the cleaned IBAN
+        $this->assertEquals($iban, $decryptedIban);
     }
 
     /**
