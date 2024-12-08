@@ -60,25 +60,45 @@
 
 <script>
 import { ref } from "vue";
-import { validateEmail, validatePassword } from '@/utils/validation';
+import { useRouter } from 'vue-router';
+import { useAuthStore } from "@/stores/authStore";
+import { validateEmail, validatePassword } from "@/utils/validation";
 
 export default {
   setup() {
     const email = ref("");
     const password = ref("");
+    const formRef = ref(null);
     const loginError = ref("");
+    const router = useRouter();
+    const authStore = useAuthStore();
 
     const rules = {
-      email: [ (v) => validateEmail(v)],
+      email: [(v) => validateEmail(v)],
       password: [(v) => validatePassword(v)],
     };
 
-    const login = async () => {};
+    const login = async () => {
+      if (formRef.value.validate()) {
+        try {
+          await authStore.login(email.value, password.value);
+          router.push("/dashboard");
+        } catch (error) {
+          console.error("Login failed:", error);
+          if (error.response && error.response.data.message) {
+            loginError.value = error.response.data.message;
+          }
+        }
+      } else {
+        console.log("Form is invalid");
+      }
+    };
 
     return {
       email,
-      password,
+      formRef,
       rules,
+      password,
       login,
       loginError,
     };
@@ -87,7 +107,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "@/styles/variables.scss";
+@use "@/styles/variables.scss" as *;
 
 .login-container {
   background-color: $white;
