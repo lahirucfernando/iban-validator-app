@@ -25,4 +25,13 @@ class IbanRepository implements IbanRepositoryInterface
         $user->iban = $encryptedIban;
         $user->save();
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function list()
+    {
+        return User::select('uuid', 'name', 'email', 'iban')
+            ->paginate(config('pagination.per_page'));
+    }
 }

@@ -10,4 +10,5 @@ Route::post('/login', [AuthController::class, 'login']);
 
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/save-iban', [IbanController::class, 'store']);
+    Route::get('/iban-number-list', [IbanController::class, 'list'])->middleware('role:admin');
 });

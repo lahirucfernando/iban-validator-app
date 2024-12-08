@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Helpers\ApiResponse;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Resources\IbanResource;
 use App\Http\Requests\StoreIbanRequest;
 use App\Interfaces\IbanRepositoryInterface;
 use Symfony\Component\HttpFoundation\Response;
@@ -70,6 +71,18 @@ class IbanController extends Controller
         } catch (\Throwable $e) {
             Log::error('store() Save IBAN Exception: ' . $e->getMessage());
             return ApiResponse::error('An unexpected error occurred while save IBAN number.', Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+    public function list()
+    {
+        try {
+            $list = $this->ibanRepository->list();
+            return IbanResource::collection($list);
+        } catch (\Throwable $e) {
+            Log::error('list() IBAN list Exception: ' . $e->getMessage());
+            return ApiResponse::error('An unexpected error occurred in IBAN number list.', Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 }

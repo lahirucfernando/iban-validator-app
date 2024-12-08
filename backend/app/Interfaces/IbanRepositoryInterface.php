@@ -3,6 +3,7 @@
 namespace App\Interfaces;
 
 use App\Models\User;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 interface IbanRepositoryInterface
 {
@@ -14,4 +15,11 @@ interface IbanRepositoryInterface
      * @return void
      */
     public function updateIban(User $user,string $iban);
+
+    /**
+     * Get IBAN number list
+     * 
+     * @return LengthAwarePaginator
+     */
+    public function list();
 }
