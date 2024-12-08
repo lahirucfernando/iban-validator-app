@@ -37,7 +37,6 @@
                 type="submit"
                 variant="elevated"
                 block
-                @click="login"
               >
                 Login
               </v-btn>
@@ -49,7 +48,9 @@
             </div>
 
             <v-card-actions class="pb-3">
-              <v-btn size="x-small" color="primary"> Sign Up </v-btn>
+              <v-btn size="x-small" color="primary" @click="goToSignUp">
+                Sign Up
+              </v-btn>
             </v-card-actions>
           </v-form>
         </v-card>
@@ -60,9 +61,9 @@
 
 <script>
 import { ref } from "vue";
-import { useRouter } from 'vue-router';
+import { useRouter } from "vue-router";
 import { useAuthStore } from "@/stores/authStore";
-import { validateEmail, validatePassword } from "@/utils/validation";
+import { validateEmail, required } from "@/utils/validation";
 
 export default {
   setup() {
@@ -75,11 +76,12 @@ export default {
 
     const rules = {
       email: [(v) => validateEmail(v)],
-      password: [(v) => validatePassword(v)],
+      password: [(v) => required(v, 'Password')]
     };
 
     const login = async () => {
-      if (formRef.value.validate()) {
+      const isValid = await formRef.value.validate();
+      if (isValid?.valid) {
         try {
           await authStore.login(email.value, password.value);
           router.push("/dashboard");
@@ -94,13 +96,16 @@ export default {
       }
     };
 
+    const goToSignUp = () => router.push("/signup");
+
     return {
       email,
-      formRef,
       rules,
-      password,
       login,
+      formRef,
+      password,
       loginError,
+      goToSignUp,
     };
   },
 };

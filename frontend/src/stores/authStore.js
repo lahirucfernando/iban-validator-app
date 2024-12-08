@@ -7,11 +7,11 @@ export const useAuthStore = defineStore("auth", {
     user: JSON.parse(localStorage.getItem("authUser")) || null,
   }),
   actions: {
-    setTokenAndUser(token, user){
-        this.token = token;
-        this.user = user;
-        localStorage.setItem("authToken", token);
-        localStorage.setItem("authUser", JSON.stringify(user));
+    setTokenAndUser(token, user) {
+      this.token = token;
+      this.user = user;
+      localStorage.setItem("authToken", token);
+      localStorage.setItem("authUser", JSON.stringify(user));
     },
 
     async login(email, password) {
@@ -19,13 +19,26 @@ export const useAuthStore = defineStore("auth", {
         const response = await api.post("/login", { email, password });
         const { data } = response.data;
         const { token, user } = data;
-        this.setTokenAndUser(token, user) 
+        this.setTokenAndUser(token, user);
         return response.data;
       } catch (error) {
         console.error("Login error:", error);
         throw error;
       }
-    }
+    },
+
+    async signUp(payload) {
+      try {
+        const response = await api.post("/user-register", payload);
+        const { data } = response.data;
+        const { token, user } = data;
+        this.setTokenAndUser(token, user);
+        return response.data;
+      } catch (error) {
+        console.error("signUp error:", error);
+        throw error;
+      }
+    },
   },
   getters: {
     isAuthenticated: (state) => !!state.token,
