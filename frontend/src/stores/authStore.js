@@ -39,6 +39,34 @@ export const useAuthStore = defineStore("auth", {
         throw error;
       }
     },
+
+    loadTokenAndUser() {
+      const token = localStorage.getItem("authToken");
+      if (token) {
+        this.token = token;
+      }
+      const user = localStorage.getItem("authUser");
+      if (user) {
+        this.user = JSON.parse(user);
+      }
+    },
+
+    logout() {
+      this.token = null;
+      this.user = null;
+      localStorage.removeItem("authToken");
+      localStorage.removeItem("authUser");
+    },
+
+    async saveIbanNumber(payload) {
+      try {
+        const response = await api.post("/save-iban", payload);
+        return response.data;
+      } catch (error) {
+        console.error("saveIbanNumber error:", error);
+        throw error;
+      }
+    },
   },
   getters: {
     isAuthenticated: (state) => !!state.token,

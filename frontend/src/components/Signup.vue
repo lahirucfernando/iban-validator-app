@@ -3,7 +3,7 @@
     <v-row>
       <v-col cols="12" class="d-flex justify-center">
         <v-card class="mx-auto">
-          <v-toolbar cards dark flat>
+          <v-toolbar dark flat>
             <v-card-title class="text-h6 font-weight-regular">
               Sign up
             </v-card-title>

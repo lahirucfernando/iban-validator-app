@@ -12,9 +12,13 @@ import App from './App.vue'
 
 // Composables
 import { createApp } from 'vue'
+import { useAuthStore } from '@/stores/authStore'
 
 const app = createApp(App)
 
 registerPlugins(app)
+
+const authStore = useAuthStore();
+authStore.loadTokenAndUser();
 
 app.mount('#app')

@@ -7,27 +7,43 @@
 
 // Composables
 import { createRouter, createWebHistory } from 'vue-router/auto'
-import { routes } from 'vue-router/auto-routes'
 import { useAuthStore } from '@/stores/authStore';
+import Dashboard from "@/pages/dashboard"; 
+import Login from "@/components/login"; 
+import Signup from '@/components/Signup';
+import IbanForm from '@/components/IbanForm';
 
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
-    ...routes,
-    {
-      path: '/dashboard',
-      component: () => import('@/pages/dashboard.vue'),
-      meta: { requiresAuth: true }
-    },
     {
       path: '/login',
-      component: () => import('@/components/Login.vue')
+      component: Login
     },
     {
       path: '/signup',
-      component: () => import('@/components/Signup.vue')
-    }
+      component: Signup
+    },
+    {
+      path: "/",
+      component: Dashboard, 
+      meta: { requiresAuth: true },
+      children: [
+        {
+          path: "dashboard",
+          component: IbanForm,
+        },
+        // {
+        //   path: "iban-list",
+        //   component: ,
+        // }
+      ],
+    },
+    {
+      path: "/:pathMatch(.*)*",
+      redirect: "/dashboard", 
+    },
   ]
 })
 
@@ -53,8 +69,6 @@ router.isReady().then(() => {
 // Guard for Authentication
 router.beforeEach((to, from, next) => {
   const authStore = useAuthStore();
-  if(authStore.isAuthenticated)
-    next();
   if (to.meta.requiresAuth && !authStore.isAuthenticated) {
     next('/login');
   } else {
