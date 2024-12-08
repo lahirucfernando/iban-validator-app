@@ -36,7 +36,9 @@ Start backend application
 ```
 php artisan serve
 ```
-You can access the backend application at http://127.0.0.1:8000 and swagger API documentation -> http://127.0.0.1:8000/api/documentation
+You can access the following urls
+- **API URL**:  http://127.0.0.1:8000/api
+- **swagger API documentation URL**: http://127.0.0.1:8000/api/documentation
 
 
 ## Default Users
