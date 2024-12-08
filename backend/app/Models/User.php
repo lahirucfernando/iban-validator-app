@@ -8,6 +8,9 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Support\Str;
+use App\Models\Role;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+
 
 /**
  * @OA\Schema(
@@ -71,5 +74,18 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function roles(): BelongsToMany
+    {
+        return $this->belongsToMany(Role::class);
+    }
+
+    /**
+     * Check if user has the admin role
+     */
+    public function isAdmin()
+    {
+        return $this->roles()->where('name', 'admin')->exists(); 
     }
 }
