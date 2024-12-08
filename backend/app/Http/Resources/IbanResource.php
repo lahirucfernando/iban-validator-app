@@ -25,10 +25,14 @@ class IbanResource extends JsonResource
         ];
     }
 
+    /**
+     * Mask the IBAN for security purposes.
+     *
+     * @param  string  $iban
+     * @return string
+     */
     private function maskIban(string $iban): string
     {
         return str_repeat('*', 10) . substr($iban, -4);
     }
 }
-
-

@@ -74,7 +74,63 @@ class IbanController extends Controller
         }
     }
 
-
+    /**
+     * @OA\Get(
+     *     path="/iban-number-list",
+     *     summary="Get paginated list of IBAN numbers",
+     *     description="This endpoint returns a paginated list of IBAN numbers. Authentication is required.",
+     *     tags={"IBAN"},
+     *     security={{
+     *         "sanctum": {}
+     *     }},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successfully fetched the IBAN numbers list",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="array",
+     *                 @OA\Items(ref="#/components/schemas/UserWithIban")
+     *             ),
+     *             @OA\Property(
+     *                 property="current_page",
+     *                 type="integer",
+     *                 example=1
+     *             ),
+     *             @OA\Property(
+     *                 property="per_page",
+     *                 type="integer",
+     *                 example=10
+     *             ),
+     *             @OA\Property(
+     *                 property="total",
+     *                 type="integer",
+     *                 example=50
+     *             ),
+     *             @OA\Property(
+     *                 property="last_page",
+     *                 type="integer",
+     *                 example=5
+     *             ),
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=403,
+     *         description="Unauthorized access.",
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthorized. Token is invalid or not provided.",
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error.",
+     *     ),
+     * )
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function list()
     {
         try {
